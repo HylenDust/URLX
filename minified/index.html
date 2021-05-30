@@ -1,0 +1,68 @@
+<title>URLX</title>
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://slight.gq/favicon.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="icon" type="image/png" href="https://slight.gq/favicon.png">
+<meta property="og:title" content="Slight.gq – The best URL shortener">
+<meta property="og:url" content="https://slight.gq">
+<meta property="twitter:card" content="summary_small_image">
+<meta name="theme-color" content="#10B981">
+<meta property="og:description" content="
+Slight.gq is a super easy to use, quick, no tracking URL shortener. It supports:
+- ✨ Custom ID's (https://slight.gq/anything)
+- ✏️ Editing links (by setting a password when creating them)
+- 🚫 No tracking
+- ⏩ Speed - super fast
+- 💸 Free: It's totally free.
+- 👨‍💻 Open source: Just go to https://slight.gq/__repl to see the code.
+">
+<noscript>
+	<center style="height:100vh;width:100vw;background:#fff;z-index:10000;display:flex;justify-content:center;align-items:center;flex-direction:column">
+		<h1 class="text-center text-gray-700 text-5xl block">Idiot</h1>
+		<i class="block">
+			<p>Turn on JavaScript >=(</p>
+		</i>
+	</center>
+</noscript>
+<link type="application/json+oembed" href="https://slight.gq/embed.json">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="vue.js"></script>
+<script src="iconify.js"></script>
+<script src="snackbar.js"></script>
+<link rel="stylesheet" href="snackbar.css">
+<link href="tailwind.css" rel="stylesheet">
+<style>@import url(https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap);*{font-family:Montserrat,sans-serif;transition-property:background-color,color,box-shadow!important;transition-duration:.4s!important}</style>
+<script src="bijou.js" type="module"></script>
+<html>
+<style>#message-box *{display:inline!important}#message-box .iconify{cursor:pointer!important;transition:color .3s ease}#message-box .iconify:hover{color:#555}</style>
+<body style="visibility:hidden" onload="display()">
+	<div id="app" class="inset-center h-full flex flex-col justify-center items-center" style="max-width:600px;width:60vw">
+		<h1 class="text-center text-gray-600 text-2xl font-extrabold m-3"> URL Shortener </h1>
+		<span id="message-box" v-if="shortened" class="p-2 bg-green-100 ring-2 ring-green-500 text-gray-500 my-3 break-all w-full h-auto italic inline-block rounded text-md text-center">
+			<span v-html="shortened"></span>
+      <span class="inline" v-if="realUrl" v-on:click="copy">
+				<span class="iconify" data-icon="akar-icons:copy"></span>
+			</span>
+		</span>
+		<div class="input flex flex-col sm:flex-row items-center justify-center" style="min-width:100%">
+			<input v-on:change="changeUrl" v-on:blur="changeUrl" v-on:keyup="changeUrl" class="w-full focus:ring-4 focus:outline-none focus:ring-green-500 rounded focus:ring-opacity-50 border-2 border-green-500 transition-shadow transition-colors p-2 text-gray-600 shadow-xl text-sm hover:shadow-2xl flex my-2" type="url" name="url" id="url" style="flex:10" placeholder="Shorten a url!" autofocus spellcheck="false">
+			<button id="button" v-on:click="shortenurl" class="my-2 flex-1 w-full bg-green-500 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 hover:bg-green-700 text-white font-bold py-2 px-4 md:px-6 lg:px-8 rounded transition-colors transition-shadow flex text-center ml-1">
+				<span class="flex justify-center items-center" v-if='status==="loading"'><svg style="margin:0 auto" class="inline-block animate-spin h-3 w-3 text-white text-center w-full" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+					</svg></span>
+				<span v-else class="text-center w-full"> Go </span>
+			</button>
+		</div>
+		<span v-if="newurl.replace(/[^a-z]/g, '').length && re.test(newurl)" class="w-full sm:w-6/12 text-center text-sm mt-6 text-gray-400 font-light">The new URL will be <span class="bg-green-400 rounded inline-block text-white">https://slight.gq/{{id}}</span><br><a class="underline inline text-green-600 hover:text-green-700" href="javascript:void(0)" v-on:click="newId">Change ID</a>
+			<a class="underline inline text-green-600 hover:text-green-700" v-if="password" v-on:click="setPassword" href="javascript:void(0)">Change password</a>
+			<a class="underline inline text-green-600 hover:text-green-700" v-else v-on:click="setPassword" href="javascript:void(0)">Set password</a></span>
+		<span v-else-if="newurl" class="w-full sm:w-6/12 text-center italic text-sm text-gray-400 mt-6 font-light">Invalid URL format</span>
+		<span v-else class="w-full sm:w-6/12 text-center italic text-sm mt-6 text-gray-400 font-light">Type something into the URL box!</span>
+	</div>
+	<span class="text-gray-500 text-sm" style="position:absolute;bottom:5px;left:5px">Bookmarklet: <a class="italic text-sm text-green-600 hover:text-green-700 cursor-pointer" href='javascript:(async()=>{var e=await fetch("https://slight.gq/shorten",{method:"POST",body:JSON.stringify({url:window.location.href,id:prompt("ID",function(){var t=46656*Math.random()|0,e=46656*Math.random()|0;return t=("000"+t.toString(36)).slice(-3),e=("000"+e.toString(36)).slice(-3),t+e}())})}).then(t=>t.json());e.url?(t=document.createElement("textarea"),document.body.appendChild(t),t.value=e.url,t.select(),document.execCommand("copy"),t.remove()):alert(e.error||e.message)})();'>Shorten</a></span>
+</body>
+
+</html>
+<script>function display(){document.body.style.visibility="visible"}var app=new Vue({el:"#app",data:{newurl:"",shortened:"",realUrl:"",status:"normal",id:genId(),password:"",re:/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/},methods:{changeUrl:e=>{app.newurl=document.querySelector("input").value,13===e.keyCode&&app.shortenurl()},copy:()=>{let e=document.createElement("textarea");e.value=app.realUrl,document.body.appendChild(e),e.select(),document.execCommand("copy"),e.remove(),Snackbar.show({text:"Copied to clipboard",actionText:"ok"})},shortenurl:async()=>{app.status="loading";var a={url:document.querySelector("input").value,id:app.id};app.password&&(a.password=app.password);a=await fetch("/shorten",{method:"POST",body:JSON.stringify(a)}).then(e=>e.json());if(app.shortened=a.error||a.message,a.url){app.realUrl=a.url,console.log(app.realUrl);let e=document.createElement("textarea");e.value=a.url,document.body.appendChild(e),e.select(),document.execCommand("copy"),e.remove(),Snackbar.show({text:"Copied to clipboard",actionText:"ok"})}app.status="normal",app.id=genId()},setPassword:()=>{app.password=prompt("What password would you like? (This password can be used to update your shortened URL)",app.password||"")},newId:()=>{let e=prompt("New ID? (https://slight.gq/[id])",genId());if(e){for(;!/[a-zA-Z0-9]/gi.test(e);)if(e=prompt("Invalid ID, please only use alphanumeric characters.",">=("),!e)return;app.id=e,document.querySelector("input").focus()}}}});function genId(){var e=46656*Math.random()|0,a=46656*Math.random()|0;return(e=("000"+e.toString(36)).slice(-3))+(a=("000"+a.toString(36)).slice(-3))}</script>
+<style>.inset-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}.snackbar-container{transition:all .3s ease!important;background:#fff!important;border:1px solid #ccc;color:#333!important}.snackbar-container *{color:#333!important;transition:all .3s ease!important}.snackbar-container button.action{background:rgba(0,182,112,.795);padding:4px;color:#fff;border-radius:3px}</style>
